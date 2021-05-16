@@ -21,10 +21,8 @@ def possible_barcode_iterator(k, AT_max, GC_max):
 
     def recursive_extension(prev_seq, prev_cnt):  # No defaults
         bad_bases = ''
-        if prev_seq[-2] == prev_seq[-1]:  # Don't allow triplets
+        if prev_seq[-2] == prev_seq[-1] and prev_seq[-3] == prev_seq[-2]:  # Don't allow triplets
             bad_bases += prev_seq[-1]
-            if prev_seq[-1] == 'G':  # Illumina has higher errors with GGC
-                bad_bases += 'C'
         if prev_cnt[0] + prev_cnt[3] == AT_max:  # Enforce AT/GC content within bounds
             bad_bases += 'AT'
         elif prev_cnt[1] + prev_cnt[2] == GC_max:
@@ -78,10 +76,8 @@ def seq_iterator_avoiding_prev_bases(k, AT_max, GC_max, first_base, seqs_so_far=
 
     def recursive_extension(prev_seq, prev_cnt):  # No defaults
         bad_bases = ''.join([other_seq[len(prev_seq)] for other_seq in seqs_so_far])
-        if prev_seq[-2] == prev_seq[-1]:  # Don't allow triplets
+        if prev_seq[-2] == prev_seq[-1] and prev_seq[-3] == prev_seq[-2]:  # Don't allow triplets
             bad_bases += prev_seq[-1]
-            if prev_seq[-1] == 'G':  # Illumina has higher errors with GGC
-                bad_bases += 'C'
         if prev_cnt[0] + prev_cnt[3] == AT_max:  # Enforce AT/GC content within bounds
             bad_bases += 'AT'
         elif prev_cnt[1] + prev_cnt[2] == GC_max:
